@@ -1,49 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="utf-8">
-  <title>Lakeland Toyota → ElevenLabs CSV Filter</title>
+  <title>Lakeland Toyota → ElevenLabs</title>
   <style>
-    body { font-family: Arial; text-align: center; padding: 50px; background: #f0f0f0; }
-    h1 { color: #333; }
-    p { color: #666; }
-    input, button { padding: 15px; font-size: 18px; margin: 10px; }
-    button { background: #4caf50; color: white; border: none; cursor: pointer; }
-    #status { color: #4caf50; font-weight: bold; }
+    body{font-family:Arial;text-align:center;padding:80px;background:#f9f9f9}
+    h1{font-size:2.5em}
+    input,button{padding:15px;font-size:18px;margin:10px}
+    button{background:#0066ff;color:white;border:none;border-radius:8px;cursor:pointer}
   </style>
 </head>
 <body>
   <h1>Lakeland Toyota → ElevenLabs Filter</h1>
-  <p>Upload raw CSV to get filtered version for ElevenLabs</p>
-  <input type="file" id="file" accept=".csv">
-  <button onclick="processFile()">Process & Download</button>
-  <p id="status"></p>
-
+  <p>Upload raw CSV → get perfect ElevenLabs file</p>
+  <input type="file" id="f" accept=".csv"><br><br>
+  <button onclick="go()">Process & Download</button>
+  <p id="s"></p>
   <script>
-    async function processFile() {
-      const file = document.getElementById('file').files[0];
-      if (!file) return alert('Select a file first');
-
-      const status = document.getElementById('status');
-      status.textContent = 'Processing...';
-
-      const form = new FormData();
-      form.append('file', file);
-
-      try {
-        const res = await fetch('/api/filter', { method: 'POST', body: form });
-        if (!res.ok) throw new Error('Server error');
-
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Filtered For 11Labs.csv';
-        a.click();
-        status.textContent = 'Downloaded!';
-      } catch (e) {
-        status.textContent = 'Error – try again';
-      }
+    async function go(){
+      const file=document.getElementById('f').files[0];
+      if(!file)return alert("Pick file");
+      document.getElementById('s').innerText="Working...";
+      const form=new FormData();
+      form.append('file',file);
+      const r=await fetch('/api/filter',{method:'POST',body:form});
+      const blob=await r.blob();
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download='Filtered For 11Labs.csv';
+      a.click();
+      document.getElementById('s').innerText="Downloaded!";
     }
   </script>
 </body>
